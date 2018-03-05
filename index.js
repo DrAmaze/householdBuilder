@@ -43,7 +43,22 @@ document.getElementsByClassName('household')[0].addEventListener('click', (e) =>
 // Adds person to state
 document.getElementsByClassName('add')[0].addEventListener('click', (e) => {
   e.preventDefault();
-  addPersonToState();
+  // Variable is used to ensure both age and relationship are validated
+  // without having to run the validation functions multiple times.
+  let valid = true;
+
+  if (!validateAge()) {
+    let error = document.getElementsByName('age')[0].parentElement;
+    error.innerHTML += '(must be a number greater than 0)';
+    valid = false;
+  }
+  if (!validateRelationship()) {
+    let error = document.getElementsByName('rel')[0].parentElement;
+    error.innerHTML += '(must be selected from the options below)';
+    valid = false;
+  }
+
+  if (valid) addPersonToState() ;
 });
 
 // When user clicks 'add' button, the current person is added to state.
@@ -59,6 +74,7 @@ function addPersonToState() {
     smoker: person.smoker
   };
 
+  resetInputLabels();
   updateLocalStorage();
 
   renderPerson(uuid);
@@ -95,12 +111,39 @@ function addDeleteButton(item) {
   item.appendChild(deleteBtn);
 }
 
+function validateAge() {
+  return person.age > 0 ? true : false;
+}
+
+function validateRelationship() {
+  // This array specifies the types of relationships allowed in a
+  // household. This validation is precise due to the precise nature of
+  // applying for household insurance.
+  const validRelationships = [
+    'self',
+    'spouse',
+    'child',
+    'parent',
+    'grandparent',
+    'other'
+  ];
+  return validRelationships.includes(person.relationship) ? true : false;
+}
+
 // Resets the person variable to its initial state so that user can add
 // another household member
 function resetPerson() {
   person.age = 0;
   person.relationship = null;
   person.smoker = false;
+}
+
+function resetInputLabels() {
+  let input = document.getElementsByName('age')[0].parentElement;
+  input.innerHTML = 'Age';
+
+  input = document.getElementsByName('rel')[0].parentElement;
+  input.innerHMTL = 'Relationship';
 }
 
 function updateLocalStorage() {
