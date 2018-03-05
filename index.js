@@ -1,7 +1,6 @@
 // State object will hold all of the people in the house.
-var state = { people: [] };
-// var state = localStorage.getItem('state') ? localStorage.getItem('state') : {};
-// localStorage.setItem('state', state);
+let oldState = localStorage.getItem('householdBuilderState');
+var state = oldState ? JSON.parse(oldState) : { people: [] };
 
 // initial state of a household member
 var person = {
@@ -19,32 +18,37 @@ document.addEventListener('input', () => {
 // Adds person to state
 document.getElementsByClassName('add')[0].addEventListener('click', (e) => {
   e.preventDefault();
-  renderPerson(person);
   addPersonToState();
   return false;
 });
-
-function renderPerson(member) {
-  // const newPerson = new Member(member);
-  // console.log(newPerson);
-}
 
 // When user clicks 'add' button, the current person is added to state.
 function addPersonToState() {
   person.smoker = document.querySelector('input[type=checkbox]').checked ?
       person.smoker = true : person.smoker = false;
 
-  const personNum = Object.keys(state).length;
-
   state.people.push({
     age: person.age,
     relationship: person.relationship,
     smoker: person.smoker
   });
-  localStorage.setItem('state', state);
+
+  const persistState = JSON.stringify(state);
+  localStorage.setItem('householdBuilderState', persistState);
+
+  renderPerson();
   resetPerson();
 }
 
+function renderPerson() {
+  let list = document.getElementsByClassName('household')[0];
+  let li = document.createElement('LI');
+  let text = `age: ${person.age}, relationship: ${person.relationship}`;
+  person.smoker ? text += ', smoker' : text += ', non-smoker';
+  
+  li.appendChild(document.createTextNode(text));
+  list.appendChild(li);
+}
 
 // Resets the person variable to its initial state so that user can add
 // another household member
