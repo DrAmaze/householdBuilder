@@ -12,6 +12,15 @@ var person = {
 // Add the current household members to the page upon rendering DOM.
 renderState();
 
+document.addEventListener('submit', (e) => {
+  e.preventDefault();
+  let household = JSON.stringify(state);
+  let debug = document.getElementsByClassName('debug')[0];
+  debug.innerHTML = household;
+  debug.style.display = 'block';
+  debug.style.margin = '50px 0px';
+});
+
 // Updates person object dynamically as user inputs data.
 document.addEventListener('input', () => {
   person.age = document.getElementsByName('age')[0].value;
@@ -25,7 +34,6 @@ document.getElementsByClassName('household')[0].addEventListener('click', (e) =>
   let list = document.getElementsByClassName('household')[0];
 
   list.removeChild(e.target.parentElement);
-  debugger
   delete state.people[buttonId];
 });
 
@@ -59,7 +67,6 @@ function renderState() {
   Object.keys(state.people).forEach((key) => {
     renderPerson(key);
   });
-
 }
 
 function renderPerson(uuid) {
