@@ -46,16 +46,11 @@ document.getElementsByClassName('add')[0].addEventListener('click', (e) => {
   // Variable is used to ensure both age and relationship are validated
   // without having to run the validation functions multiple times.
   let valid = true;
-
-  if (!validateAge()) {
-    let error = document.getElementsByName('age')[0].parentElement;
-    error.innerHTML += '(must be a number greater than 0)';
+  let age = validateAge();
+  let rel = validateRelationship();
+  if (!age || !rel) {
     valid = false;
-  }
-  if (!validateRelationship()) {
-    let error = document.getElementsByName('rel')[0].parentElement;
-    error.innerHTML += '(must be selected from the options below)';
-    valid = false;
+    createErrorDiv(age, rel);
   }
 
   if (valid) addPersonToState() ;
@@ -63,6 +58,7 @@ document.getElementsByClassName('add')[0].addEventListener('click', (e) => {
 
 // When user clicks 'add' button, the current person is added to state.
 function addPersonToState() {
+
   person.smoker = document.querySelector('input[type=checkbox]').checked ?
       person.smoker = true : person.smoker = false;
 
@@ -74,11 +70,11 @@ function addPersonToState() {
     smoker: person.smoker
   };
 
-  resetInputLabels();
   updateLocalStorage();
 
   renderPerson(uuid);
   resetPerson();
+  resetError();
 }
 
 function renderState() {
@@ -138,12 +134,26 @@ function resetPerson() {
   person.smoker = false;
 }
 
-function resetInputLabels() {
-  let input = document.getElementsByName('age')[0].parentElement;
-  input.innerHTML = 'Age';
+function createErrorDiv(validAge, validRel) {
+  resetError();
+  let error = document.createElement('DIV');
+  error.setAttribute('class', 'error');
+  if (!validAge && !validRel) {
+    error.innerHTML = 'Age must be a number greater than 0; Relationship must be selected from the options below';
+  } else if (!validAge) {
+    error.innerHTML = 'Age must be a number greater than 0';
+  } else if (!validRel) {
+    error.innerHTML = 'Relationship must be selected from the options below';
+  }
 
-  input = document.getElementsByName('rel')[0].parentElement;
-  input.innerHMTL = 'Relationship';
+  document.getElementsByTagName('FORM')[0].appendChild(error);
+}
+
+function resetError() {
+  if (document.getElementsByClassName('error').length > 0) {
+    const error = document.getElementsByClassName('error')[0];
+    document.getElementsByTagName('FORM')[0].removeChild(error);
+  }
 }
 
 function updateLocalStorage() {
