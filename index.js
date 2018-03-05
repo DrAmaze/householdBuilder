@@ -4,12 +4,12 @@
 
 // State object will hold all of the people in the house. This utilizes
 // browser's local storage to have data persist through page refresh.
-var oldState = localStorage.getItem('householdBuilderState');
-var state = oldState ? JSON.parse(oldState) : { people: {} };
+let oldState = localStorage.getItem('householdBuilderState');
+let state = oldState ? JSON.parse(oldState) : { people: {} };
 
 // initial state of a household member. This dynamically updates with
 // user input.
-var person = {
+let person = {
   age: 0,
   relationship: null,
   smoker: false
@@ -29,10 +29,10 @@ renderState();
 // Upon form submission, this converts the household to JSON and appends
 // the data to the <pre> tag. This JSON persists as the household is
 // updated and can be resubmitted.
-document.addEventListener('submit', function (e) {
+document.addEventListener('submit', (e) => {
   e.preventDefault();
-  var household = JSON.stringify(state);
-  var debug = document.getElementsByClassName('debug')[0];
+  let household = JSON.stringify(state);
+  let debug = document.getElementsByClassName('debug')[0];
   debug.innerHTML = household;
 
   // style the <pre> tag in order to display the JSON
@@ -41,7 +41,7 @@ document.addEventListener('submit', function (e) {
 });
 
 // Updates person object dynamically as user inputs data.
-document.addEventListener('input', function () {
+document.addEventListener('input', () => {
   person.age = document.getElementsByName('age')[0].value;
   person.relationship = document.getElementsByName('rel')[0].value;
 });
@@ -49,11 +49,11 @@ document.addEventListener('input', function () {
 // Enables the user to remove people from the household after they are
 // added. This leverages the UUID number in order to delete the
 // appropriate person. It then updates local storage appropriately.
-document.getElementsByClassName('household')[0].addEventListener('click', function (e) {
+document.getElementsByClassName('household')[0].addEventListener('click', (e) => {
   e.preventDefault();
-  var buttonId = e.target.parentElement.id;
+  let buttonId = e.target.parentElement.id;
 
-  var list = document.getElementsByClassName('household')[0];
+  let list = document.getElementsByClassName('household')[0];
 
   list.removeChild(e.target.parentElement);
   delete state.people[buttonId];
@@ -64,13 +64,13 @@ document.getElementsByClassName('household')[0].addEventListener('click', functi
 // the person object is added to the to state object with a UUID. If
 // invalid, an error DIV is added to the form displaying the user's
 // input errors.
-document.getElementsByClassName('add')[0].addEventListener('click', function (e) {
+document.getElementsByClassName('add')[0].addEventListener('click', (e) => {
   e.preventDefault();
   // Variable is used to ensure both age and relationship are validated
   // without having to run the validation functions multiple times.
-  var valid = true;
-  var age = validateAge();
-  var rel = validateRelationship();
+  let valid = true;
+  let age = validateAge();
+  let rel = validateRelationship();
   if (!age || !rel) {
     valid = false;
     createErrorDiv(age, rel);
@@ -90,7 +90,7 @@ function addPersonToState() {
   person.smoker = document.querySelector('input[type=checkbox]').checked ?
       person.smoker = true : person.smoker = false;
 
-  var uuid = generateUUID();
+  const uuid = generateUUID();
   state.people[uuid] = {
     id: uuid,
     age: person.age,
@@ -109,7 +109,7 @@ function addPersonToState() {
 
 // Renders the list of household people when DOM loads.
 function renderState() {
-  Object.keys(state.people).forEach(function (key) {
+  Object.keys(state.people).forEach((key) => {
     renderPerson(key);
   });
 }
@@ -119,13 +119,13 @@ function renderState() {
 // new <li> which is then appended to the current <ol>. This function
 // makes a call to add a delete button to each <li> as well.
 function renderPerson(uuid) {
-  var list = document.getElementsByClassName('household')[0];
-  var li = document.createElement('LI');
+  let list = document.getElementsByClassName('household')[0];
+  let li = document.createElement('LI');
   const member = state.people[uuid];
 
   li.setAttribute('id', uuid);
 
-  var text = `age: ${member.age}, relationship: ${member.relationship}`;
+  let text = `age: ${member.age}, relationship: ${member.relationship}`;
   member.smoker ? text += ', smoker' : text += ', non-smoker';
 
   addDeleteButton(li);
@@ -137,7 +137,7 @@ function renderPerson(uuid) {
 // This handles the logic for creating a delete button for each
 // person added to the household.
 function addDeleteButton(item) {
-  var deleteBtn = document.createElement('BUTTON');
+  let deleteBtn = document.createElement('BUTTON');
   deleteBtn.setAttribute('class', 'delete');
 
   deleteBtn.appendChild(document.createTextNode('delete'));
@@ -186,7 +186,7 @@ function createErrorDiv(validAge, validRel) {
   resetError();
 
   // Creation of the <div>
-  var error = document.createElement('DIV');
+  let error = document.createElement('DIV');
   error.setAttribute('class', 'error');
 
   // error messaging logic
@@ -204,7 +204,7 @@ function createErrorDiv(validAge, validRel) {
 // Resets the appended error <div>
 function resetError() {
   if (document.getElementsByClassName('error').length > 0) {
-    var error = document.getElementsByClassName('error')[0];
+    const error = document.getElementsByClassName('error')[0];
     document.getElementsByTagName('FORM')[0].removeChild(error);
   }
 }
@@ -212,7 +212,7 @@ function resetError() {
 // Ensures the user's data persists through DOM re-render by utilizing
 // the browser's local storage.
 function updateLocalStorage() {
-  var persistState = JSON.stringify(state);
+  const persistState = JSON.stringify(state);
   localStorage.setItem('householdBuilderState', persistState);
 }
 
