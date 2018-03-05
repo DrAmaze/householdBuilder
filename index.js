@@ -1,9 +1,9 @@
 // State object will hold all of the people in the house.
 let oldState = localStorage.getItem('householdBuilderState');
-var state = oldState ? JSON.parse(oldState) : { people: {} };
+let state = oldState ? JSON.parse(oldState) : { people: {} };
 
 // initial state of a household member
-var person = {
+let person = {
   age: 0,
   relationship: null,
   smoker: false
@@ -17,6 +17,8 @@ document.addEventListener('submit', (e) => {
   let household = JSON.stringify(state);
   let debug = document.getElementsByClassName('debug')[0];
   debug.innerHTML = household;
+
+  // style the <pre> tag in order to display the JSON
   debug.style.display = 'block';
   debug.style.margin = '50px 0px';
 });
@@ -35,6 +37,7 @@ document.getElementsByClassName('household')[0].addEventListener('click', (e) =>
 
   list.removeChild(e.target.parentElement);
   delete state.people[buttonId];
+  updateLocalStorage();
 });
 
 // Adds person to state
@@ -56,8 +59,7 @@ function addPersonToState() {
     smoker: person.smoker
   };
 
-  const persistState = JSON.stringify(state);
-  localStorage.setItem('householdBuilderState', persistState);
+  updateLocalStorage();
 
   renderPerson(uuid);
   resetPerson();
@@ -99,6 +101,11 @@ function resetPerson() {
   person.age = 0;
   person.relationship = null;
   person.smoker = false;
+}
+
+function updateLocalStorage() {
+  const persistState = JSON.stringify(state);
+  localStorage.setItem('householdBuilderState', persistState);
 }
 
 // UUID function found on StackOverflow:
