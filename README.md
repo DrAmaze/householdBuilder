@@ -1,7 +1,6 @@
-# Prompt
+# Household Builder
 
-Household builder
-=================
+# Prompt
 
 Your application needs a way to capture information about a household applying
 for health insurance coverage. Develop a UI for building a household up from
@@ -43,13 +42,13 @@ The focus here is on the quality of your JavaScript, not the beauty of your desi
 household members should be usable but need not be much to look at.
 
 # Solution
-## To Run Code
+### To Run Code
 
 1. Clone or download this repository
 2. Copy the full path of the `index.html` file into your favorite browser.
 3. Enjoy building your household!
 
-# Implementation Decisions
+## Implementation Decisions
 
 ## State Object
 
